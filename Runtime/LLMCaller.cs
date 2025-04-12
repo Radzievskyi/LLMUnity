@@ -209,7 +209,17 @@ namespace LLMUnity
                 }
                 response = $"{{\"data\": [{responseArray}]}}";
             }
-            return getContent(JsonUtility.FromJson<Res>(response));
+
+            try
+            {
+                return getContent(JsonUtility.FromJson<Res>(response));
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError("❗ JSON parsing failed.\n" +
+                    "Response string:\n" + response + "\n\nException:\n" + e);
+                return default;
+            }
         }
 
         protected virtual void CancelRequestsLocal() {}
