@@ -467,8 +467,15 @@ namespace LLMUnity
             // call the callback function while the answer is received
             // call the completionCallback function when the answer is fully received
             await LoadTemplate();
-            if (!CheckTemplate()) return null;
-            if (!await InitNKeep()) return null;
+            if (!CheckTemplate())
+            {
+                completionCallback?.Invoke();
+                return null;
+            }
+            if (!await InitNKeep()) {
+                completionCallback?.Invoke();
+                return null;
+            }
 
             string json = JsonUtility.ToJson(await PromptWithQuery(query));
             string result = await CompletionRequest(json, callback);
@@ -485,6 +492,7 @@ namespace LLMUnity
                 {
                     chatLock.Release();
                 }
+
                 if (save != "") _ = Save(save);
             }
 
